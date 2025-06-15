@@ -1,0 +1,15 @@
+### Pattern to ignore binaries (files without an extension)
+# Ignore all files
+*
+
+# Unignore files with extensions
+!*.*
+!Makefile
+
+# Unignore directories
+!*/
+
+### Actual Ignores
+*.o
+*.so
+*.a
