@@ -65,18 +65,47 @@ int framebuf_write(framebuf *fb, unsigned int x, unsigned int y, tup3 *colour)
 }
 
 
-tup3 *framebuf_read(framebuf *fb, unsigned int x, unsigned int y)
+int framebuf_read(framebuf *fb, unsigned int x, unsigned int y, tup3 *dest)
 {
 	// Ensure read is within framebuf bounds
 	if (x < fb->dimx)
 	{
 		if (y < fb->dimy)
 		{
-			return fb->buf + x + (y * fb->dimx);
+			if (dest != NULL)
+			{
+				*dest = fb->buf[x + (y *fb->dimx)];
+			}
+
+			return 0;
 		}
 	}
 
-	return NULL;
+	return -1;
+}
+
+
+int framebuf_copy(framebuf *dest, framebuf *src)
+{
+	if (dest == src)
+	{
+		return -1;
+	}
+
+	if (dest->dimx != src->dimx || dest->dimy != src->dimy)
+	{
+		return 1;
+	}
+
+	for (int y = 0; y < src->dimy; y++)
+	{
+		for (int x = 0; x < src->dimx; x++)
+		{
+			dest->buf[x + y * src->dimx] = src->buf[x + y * src->dimx];
+		}
+	}
+
+	return 0;
 }
 
 

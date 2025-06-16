@@ -98,11 +98,25 @@ int framebuf_write(framebuf *, unsigned int, unsigned int, tup3 *);
  *		[framebuf *] - the framebuf to read from
  *		[unsigned int] - the x coordinate (0-indexed) to read from
  *		[unsigned int] - the y coordinate (0-indexed) to read from
+ *		[tup3 * | NULL] - the tup3 to read into (if NULL, just performs an index check)
  *
- * OUT: [tup3 * | NULL] - a pointer to the pixel at that coordinate
- *						  NULL for invalid coordinates
+ * OUT: [int] - result code
+ *				0: success
+ *				-1: indices out of bounds
  */
-tup3 *framebuf_read(framebuf *, unsigned int, unsigned int);
+int framebuf_read(framebuf *, unsigned int, unsigned int, tup3 *);
+
+
+/*
+ * Copies from one framebuffer into another - they must be of the same size
+ *
+ * IN:
+ *		[framebuf *] - the framebuffer to copy into
+ *		[framebuf *] - the framebuffer to copy from
+ *
+ * OUT: [int] - 0 on success, positive on invalid sizing, negative on source == dest
+ */
+int framebuf_copy(framebuf *, framebuf *);
 
 
 /*
