@@ -16,6 +16,8 @@
                 devShell = pkgs.mkShell {
                     packages = with pkgs; [
                         gcc
+
+                        libpng
                         cmocka
 
                         ltrace
