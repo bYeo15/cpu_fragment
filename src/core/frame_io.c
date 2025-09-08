@@ -11,8 +11,17 @@ void set_frame_output(char *path, char *ext, frame_dump dump_method)
 {
     char *path_cpy, *ext_cpy;
 
+    path_cpy = malloc(strlen(path) + 1);
+
+    if (path_cpy == NULL)
+    {
+        goto exit_fail;
+    }
+
+    strcpy(path_cpy, path);
+
     // Validate path
-    char *path_file_sep = strrchr(path, '/');
+    char *path_file_sep = strrchr(path_cpy, '/');
 
     if (path_file_sep != NULL)
     {
@@ -21,7 +30,7 @@ void set_frame_output(char *path, char *ext, frame_dump dump_method)
     }
 
     // Try to access the directory
-    if (access(path, W_OK))
+    if (access(path_cpy, W_OK))
     {
         fprintf(stderr, "[ ERROR ] : Path for output '%s' does not exist or is not writable\n",
                 path);
@@ -41,19 +50,12 @@ void set_frame_output(char *path, char *ext, frame_dump dump_method)
 
         if (f_out == NULL)
         {
-            goto exit_fail;
+            goto path_cleanup;
         }
 
         f_out->dump_method = dump_method;
 
-        path_cpy = malloc(strlen(path) + 1);
-
-        if (path_cpy == NULL)
-        {
-            goto fout_cleanup;
-        }
-
-        strcpy(path_cpy, path);
+        f_out->output_path = path_cpy;
 
         if (ext != NULL)
         {
@@ -62,10 +64,11 @@ void set_frame_output(char *path, char *ext, frame_dump dump_method)
 
             if (ext_cpy == NULL)
             {
-                goto path_cleanup;
+                goto fout_cleanup;
             }
 
             strcpy(ext_cpy, ext);
+            f_out->output_ext = ext_cpy;
         }
         else
         {
@@ -81,12 +84,12 @@ void set_frame_output(char *path, char *ext, frame_dump dump_method)
 
     return;
 
-path_cleanup:
-    free(path_cpy);
-
 fout_cleanup:
     free(f_out);
     f_out = NULL;
+
+path_cleanup:
+    free(path_cpy);
 
 exit_fail:
     fputs("[ ERROR ] : Not enough memory to create frame output config\n", stderr);
@@ -97,6 +100,11 @@ exit_fail:
 
 void free_frame_output()
 {
+    if (f_out == NULL)
+    {
+        return;
+    }
+
     free(f_out->output_path);
 
     if (f_out->output_ext != NULL)
@@ -110,6 +118,11 @@ void free_frame_output()
 
 void save_frame(framebuf *fb, unsigned long framenum)
 {
+    if (f_out == NULL)
+    {
+        return;
+    }
+
     // Construct the file name
     char *frame_name;
 
@@ -134,7 +147,7 @@ void save_frame(framebuf *fb, unsigned long framenum)
         framechars /= 10;
     }
 
-    frame_name = malloc(name_len + 1);
+    frame_name = malloc(name_len + 2);
 
     if (frame_name == NULL)
     {

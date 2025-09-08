@@ -74,7 +74,7 @@ int framebuf_read(framebuf *fb, unsigned int x, unsigned int y, tup3 *dest)
         {
             if (dest != NULL)
             {
-                *dest = fb->buf[x + (y *fb->dimx)];
+                *dest = fb->buf[x + (y * fb->dimx)];
             }
 
             return 0;

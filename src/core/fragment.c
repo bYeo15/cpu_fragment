@@ -90,7 +90,9 @@ void *fragment_thread_main(void *args)
                     active_uv.x = x;
                     active_uv.y = y;
 
-                    render_frame->buf[x + y * render_frame->dimy] = fragment(&active_uv);
+                    tup3 frag_col = fragment(&active_uv);
+
+                    framebuf_write(render_frame, x, y, &frag_col);
                 }
             }
         }
@@ -155,7 +157,8 @@ int fragment_main(job_queue *jq)
     // Wait for render jobs to be complete
     jobq_wait_complete(jq);
 
-    // Save current frame TODO
+    // Save current frame
+    save_frame(render_frame, FRAME_COUNT);
 
     // Copy current frame into BACKBUF
     framebuf_copy(BACKBUF, render_frame);
@@ -266,4 +269,7 @@ user_cleanup:
     {
         framebuf_delete(BACKBUF);
     }
+
+    // Delete the frame_output (if it exists)
+    free_frame_output();
 }

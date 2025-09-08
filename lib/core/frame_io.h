@@ -22,9 +22,9 @@
  *      [char *] - the full path to save at
  *      [framebuf *] - the framebuffer to save
  *
- * OUT: N/A
+ * OUT: [int] - error code
  */
-typedef void(*frame_dump)(char *, framebuf *);
+typedef int(*frame_dump)(char *, framebuf *);
 
 
 /*
