@@ -9,7 +9,7 @@ int resy = 1080;
 
 tup3 fragment(tup3 *frag_coord)
 {
-    tup3 norm_coord = { frag_coord->x / resx, frag_coord->y / resx, 0.0 };
+    tup3 norm_coord = { frag_coord->x / resx, frag_coord->y / resx, 0.0, 0.0 };
     return norm_coord;
 }
 

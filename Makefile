@@ -1,9 +1,11 @@
 CC := gcc
-CFLAGS := -Wall -Wextra -lm -g
+CFLAGS := -Wall -Wextra -lm -O3
 
 SRC_DIR := src
+DEMO_DIR := demos
 LIB_DIR := lib
 OBJ_DIR := obj
+FRAG_DIR := frag
 
 CFLAGS += -I$(LIB_DIR)
 
@@ -34,6 +36,11 @@ core: $(CORE_SO)
 # Make and run unit tests
 .PHONY: unit
 unit: $(FULL_UNIT)
+
+
+# Make a demo
+$(FRAG_DIR)/%: $(DEMO_DIR)/%.c $(CORE_SO) $(OPT_OBJ_DIR)/frame_png.o $(FRAG_DIR)
+	$(CC) $(CFLAGS) $< $(CORE_SO) $(OPT_OBJ_DIR)/frame_png.o -o $@ -lpng
 
 
 # Core shared obj rule
@@ -69,6 +76,10 @@ $(OPT_OBJ_DIR): $(OBJ_DIR)
 	@mkdir -p $(OPT_OBJ_DIR)
 
 
+$(FRAG_DIR):
+	@mkdir -p $(FRAG_DIR)
+
+
 $(TEST_OUT_DIR):
 	@mkdir -p $(TEST_OUT_DIR)
 
@@ -82,4 +93,6 @@ clean:
 	@echo "Cleaning up object and executable files"
 	@if [[ -d "$(OBJ_DIR)" ]]; then rm -r $(OBJ_DIR); fi
 	@if [[ -d "$(TEST_OUT_DIR)" ]]; then rm -r $(TEST_OUT_DIR); fi
+	@if [[ -d "$(FRAG_DIR)" ]]; then rm -r $(FRAG_DIR); fi
 	@if [[ -e "$(CORE_SO)" ]]; then rm $(CORE_SO); fi
+	@rm *.png
