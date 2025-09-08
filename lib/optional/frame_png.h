@@ -7,8 +7,9 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include "../core/frame_io.h"
-#include "../core/framebuffer.h"
+#include <png.h>
+#include "core/frame_io.h"
+#include "core/framebuffer.h"
 
 // -----===[ Functions ]===-----
 
@@ -23,7 +24,7 @@
  *
  * OUT: N/A
  */
-void frame_png_dump(char *, framebuf *);
+int frame_png_dump(char *, framebuf *);
 
 
 /*
@@ -31,7 +32,7 @@ void frame_png_dump(char *, framebuf *);
  *
  * IN:
  *		[char *] - the path to load from
- *	
+ *
  * OUT: [framebuf * | NULL] - the framebuffer
  *							  NULL on error
  */

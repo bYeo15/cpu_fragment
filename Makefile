@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -Wall -Wextra -lm
+CFLAGS := -Wall -Wextra -lm -g
 
 SRC_DIR := src
 LIB_DIR := lib
@@ -13,6 +13,9 @@ CORE_SRC := $(notdir $(wildcard $(CORE_DIR)/*.c))
 CORE_OBJ_DIR := $(OBJ_DIR)/core
 CORE_OBJ := $(addprefix $(CORE_OBJ_DIR)/,$(patsubst %.c,%.o,$(CORE_SRC)))
 CORE_SO := libcpufragcore.so
+
+OPT_DIR := $(SRC_DIR)/optional
+OPT_OBJ_DIR := $(OBJ_DIR)/optional
 
 TEST_DIR := test
 TEST_OUT_DIR := $(TEST_DIR)/bin
@@ -43,7 +46,12 @@ $(CORE_OBJ_DIR)/%.o: $(CORE_DIR)/%.c $(CORE_OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 
-# Make core tests TODO : Differentiate core tests from non-core
+# Make a single optional obj file
+$(OPT_OBJ_DIR)/%.o: $(OPT_DIR)/%.c $(OPT_OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+
+# Make core tests TODO
 $(TEST_OUT_DIR)/%: $(UNIT_DIR)/%.c $(TEST_OUT_DIR) $(CORE_SO)
 	$(CC) $(CFLAGS) $(TEST_FLAGS) $< $(CORE_OBJ) -o $@
 
@@ -57,8 +65,16 @@ $(CORE_OBJ_DIR): $(OBJ_DIR)
 	@mkdir -p $(CORE_OBJ_DIR)
 
 
+$(OPT_OBJ_DIR): $(OBJ_DIR)
+	@mkdir -p $(OPT_OBJ_DIR)
+
+
 $(TEST_OUT_DIR):
 	@mkdir -p $(TEST_OUT_DIR)
+
+
+# Specific optional components
+png: $(OPT_OBJ_DIR)/frame_png.o
 
 
 .PHONY: clean

@@ -17,7 +17,9 @@ static inline uint8_t prop_to_255(float prop)
 
 static inline rgb_pix t3_to_rgb(tup3 *t)
 {
-    return rgb_pix { r = prop_to_255(t->x), g = prop_to_255(t->y), b = prop_to_255(t->z) };
+    rgb_pix rgb = { prop_to_255(t->x), prop_to_255(t->y), prop_to_255(t->z) };
+
+    return rgb;
 }
 
 int frame_png_dump(char *path, framebuf *fb)
@@ -49,7 +51,7 @@ int frame_png_dump(char *path, framebuf *fb)
         goto cleanup_pngptr;
     }
 
-    if (setjmp(png_jmpbuf(png_ptr))
+    if (setjmp(png_jmpbuf(png_ptr)))
     {
         status = 4;
         goto cleanup_pngptr;
@@ -57,26 +59,26 @@ int frame_png_dump(char *path, framebuf *fb)
 
     // Set PNG attributes (8 for single bit colour)
     png_set_IHDR(png_ptr, info_ptr, fb->dimx, fb->dimy,
-                 8, PNG_COLOR_TYPE_RBG, PNG_INTERLACE_NONE,
+                 8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
                  PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
     // Create PNG rows
     png_rows = png_malloc(png_ptr, fb->dimy * sizeof(png_byte *));
-    tup3 *curr_t3 = NULL;
+    tup3 curr_t3;
     for (unsigned int y = 0; y < fb->dimy; y++)
     {
         // * 3 is for rgb components (no alpha)
         png_byte *png_row = png_malloc(png_ptr, sizeof(uint8_t) * fb->dimx * 3);
-        unsigned_int row_x = 0;
-        png_rows[y] = png_row
+        unsigned int row_x = 0;
+        png_rows[y] = png_row;
 
         for (unsigned int x = 0; x < fb->dimx; x++)
         {
-            framebuf_read(fb, x, y, curr_t3);
-            rbg_pix p = t3_to_rbg(curr_t3);
-            png_row[row_x++] = rgb_pix.r;
-            png_row[row_x++] = rgb_pix.g;
-            png_row[row_x++] = rgb_pix.b;
+            framebuf_read(fb, x, y, &curr_t3);
+            rgb_pix p = t3_to_rgb(&curr_t3);
+            png_row[row_x++] = p.r;
+            png_row[row_x++] = p.g;
+            png_row[row_x++] = p.b;
         }
     }
 
@@ -102,5 +104,6 @@ cleanup_pngf:
 framebuf *frame_png_load(char *path)
 {
     // TODO
+    (void) path;
     return NULL;
 }
