@@ -40,7 +40,7 @@ unit: $(FULL_UNIT)
 
 # Make a demo
 $(FRAG_DIR)/%: $(DEMO_DIR)/%.c $(CORE_SO) $(OPT_OBJ_DIR)/frame_png.o $(FRAG_DIR)
-	$(CC) $(CFLAGS) $< $(CORE_SO) $(OPT_OBJ_DIR)/frame_png.o -o $@ -lpng
+	$(CC) $(CFLAGS) $< $(CORE_SO) $(OPT_OBJ_DIR)/frame_png.o -o $@ -lpng -lm
 
 
 # Core shared obj rule
@@ -95,4 +95,4 @@ clean:
 	@if [[ -d "$(TEST_OUT_DIR)" ]]; then rm -r $(TEST_OUT_DIR); fi
 	@if [[ -d "$(FRAG_DIR)" ]]; then rm -r $(FRAG_DIR); fi
 	@if [[ -e "$(CORE_SO)" ]]; then rm $(CORE_SO); fi
-	@rm *.png
+	@rm -f *.png
