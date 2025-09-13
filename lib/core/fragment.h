@@ -53,6 +53,7 @@ extern unsigned int n_frames;
  */
 extern framebuf *BACKBUF;
 
+
 /*
  * The current frame number, starting at zero, and incrementing after each frame
  */
@@ -63,6 +64,12 @@ extern unsigned long FRAME_COUNT;
  * (starts at zero)
  */
 extern unsigned long long CLOCK_NS;
+
+
+/*
+ * The x, y dimensions of the render frame, as a tuple3
+ */
+extern tup3 FRAME_DIM;
 
 
 /*
@@ -124,24 +131,5 @@ extern void frag_cleanup(void);
  * OUT: N/A
  */
 void create_render_frame(unsigned int, unsigned int);
-
-
-/*
- * Generates a random value in [0, LONG_MAX], based on a seed
- *
- * Afterwards, alters the seed, so that it can be used again to
- * get a new value
- *
- * Can be used inside `fragment` to ensure that all pixels get the same random
- * values per-frame (ie. seed with FRAME_COUNT)
- *
- * To get random values per-pixel, seed with a combination of FRAME_COUNT and the (x, y) coordinates
- *
- * IN:
- *      [long *] - the seed, will be modified to store the result
- *
- * OUT: [long] - the random value
- */
-long frag_random(long *);
 
 #endif

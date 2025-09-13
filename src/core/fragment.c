@@ -21,6 +21,8 @@ unsigned long FRAME_COUNT = 0;
 unsigned long long CLOCK_NS = 0;
 struct timespec prev_t;
 
+tup3 FRAME_DIM = { 0.0, 0.0, 0.0, 0.0 };
+
 float CONST_RAND = 0.0;
 
 
@@ -200,6 +202,10 @@ int main(int argc, char **argv)
         // Clean goto - jumps forward, to greater or equal scope
         goto user_cleanup;
     }
+
+    // Load frame dimensions into the uniform
+    FRAME_DIM.x = (float) render_frame->dimx;
+    FRAME_DIM.y = (float) render_frame->dimy;
 
     // Create queue of render jobs
     if ((jq = jobq_init()) == NULL)

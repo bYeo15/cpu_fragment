@@ -30,7 +30,7 @@ void set_frame_output(char *path, char *ext, frame_dump dump_method)
     }
 
     // Try to access the directory
-    if (access(path_cpy, W_OK))
+    if (path_file_sep && access(path_cpy, W_OK))
     {
         fprintf(stderr, "[ ERROR ] : Path for output '%s' does not exist or is not writable\n",
                 path);
