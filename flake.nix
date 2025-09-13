@@ -15,7 +15,7 @@
             in rec {
                 devShell = pkgs.mkShell {
                     packages = with pkgs; [
-                        gcc
+                        gcc15
 
                         libpng
                         cmocka
