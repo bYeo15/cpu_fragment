@@ -2,6 +2,9 @@
 # Ignore all files
 *
 
+# Specific unignore for shaderc
+!shaderc
+
 # Unignore files with extensions
 !*.*
 !Makefile

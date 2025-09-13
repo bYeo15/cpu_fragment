@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [[ "$#" -ne 2 ]]; then
+    echo "Usage: $0 <fragment source file> <template shared object>"
+    exit 1
+fi
+
+if [[ "$(basename "$1" ".c")" = "$1" ]]; then
+    echo "Warning: $1 would be overwritten by the compilation"
+    exit 2
+fi
+
+INCLUDES='#include "core/fragment.h"\n#include "core/tuple.h"\n#include "core/framebuffer.h"\n#include <math.h>'
+
+echo -e "$INCLUDES" > /tmp/shaderc_tmp.c
+cat "$1" >> /tmp/shaderc_tmp.c
+gcc /tmp/shaderc_tmp.c -O3 -ffast-math -I./lib "$2" -o "$(basename "$1" ".c")" -lm -lpng
+rm /tmp/shaderc_tmp.c

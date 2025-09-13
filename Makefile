@@ -1,10 +1,11 @@
 CC := gcc
-CFLAGS := -Wall -Wextra -lm -O3
+CFLAGS := -Wall -Wextra -O3 -ffast-math -fpic
 
 SRC_DIR := src
 DEMO_DIR := demos
 LIB_DIR := lib
 OBJ_DIR := obj
+TEMPLATE_DIR := templates
 FRAG_DIR := frag
 
 CFLAGS += -I$(LIB_DIR)
@@ -27,6 +28,12 @@ FULL_UNIT := $(addprefix $(TEST_OUT_DIR)/,$(basename $(notdir $(wildcard $(UNIT_
 
 TEST_FLAGS := -lcmocka -fsanitize=address,leak -g -Og
 
+TEMPLATES = $(patsubst %.c,%.so,$(notdir $(wildcard $(TEMPLATE_DIR)/*.c)))
+
+
+# Make all templates
+.PHONY: templates
+templates: $(TEMPLATES)
 
 # Make core shared obj
 .PHONY: core
@@ -38,9 +45,16 @@ core: $(CORE_SO)
 unit: $(FULL_UNIT)
 
 
-# Make a demo
-$(FRAG_DIR)/%: $(DEMO_DIR)/%.c $(CORE_SO) $(OPT_OBJ_DIR)/frame_png.o $(FRAG_DIR)
-	$(CC) $(CFLAGS) $< $(CORE_SO) $(OPT_OBJ_DIR)/frame_png.o -o $@ -lpng -lm
+# Make a template
+png_io_template.so: $(TEMPLATE_DIR)/png_io_template.c $(CORE_SO) png
+	$(CC) $(CFLAGS) $< -c -o png_io_template.o
+	ld -r png_io_template.o $(CORE_OBJ) $(OPT_OBJ_DIR)/frame_png.o -o $@
+	@rm png_io_template.o
+
+plain_frag_template.so: $(TEMPLATE_DIR)/plain_frag_template.c $(CORE_SO) png
+	$(CC) $(CFLAGS) $< -c -o plain_frag_template.o
+	ld -r plain_frag_template.o $(CORE_OBJ) $(OPT_OBJ_DIR)/frame_png.o -o $@
+	@rm plain_frag_template.o
 
 
 # Core shared obj rule
