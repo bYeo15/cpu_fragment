@@ -26,7 +26,7 @@ A user provided file should do the following;
 
 ### `png_io_template`
 
-A template that loads a `png` file to do work on. The loaded file will also be provided as the initial`BACKBUF.
+A template that loads a `png` file to do work on. The loaded file will also be provided as the initial `BACKBUF`.
 
 Results in a shader program that;
 - Takes as input: the `png` file to load, the path to save files at (minus the file extension), and the number of frames (optional, defaults to `1`)
@@ -38,7 +38,7 @@ A user provided file should do the following;
 
 ## `fragment`
 
-The `fragment `function provides the per-pixel functionality of the shader. All code used in the `fragment` function must be threadsafe.
+The `fragment` function provides the per-pixel functionality of the shader. All code used in the `fragment` function must be threadsafe.
 
 As input, it receives a pointer to a single `tup3`, with the `x` and `y` components to the coordinates of the current pixel. The `z` and `w` components are not defined and should not be used.
 
